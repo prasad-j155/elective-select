@@ -12,3 +12,5 @@ google-pasta==0.2.0
 google-resumable-media==2.7.2
 googleapis-common-protos==1.70.0
 pandas==2.2.3
+google-auth-oauthlib
+
