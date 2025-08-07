@@ -11,7 +11,9 @@ SHEET_NAME = "electivedata"  # Or change to your actual sheet name
 
 # ------------------ GOOGLE SHEETS SETUP ------------------ #
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-creds = service_account.Credentials.from_service_account_file("credentials.json", scopes=SCOPES)
+creds = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"]
+)
 service = build("sheets", "v4", credentials=creds)
 
 def get_submitted_records():
@@ -153,3 +155,4 @@ if st.session_state.sis_verified:
                     st.rerun()
                 except Exception as e:
                     st.error(f"❌ Error writing to Google Sheet: {e}")
+
