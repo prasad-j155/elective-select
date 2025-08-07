@@ -12,8 +12,8 @@ SHEET_NAME = "electivedata"    # Change if needed
 
 # ------------------ GOOGLE SHEETS SETUP ------------------ #
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-import streamlit as st
-from google.oauth2 import service_account
+
+
 
 creds = service_account.Credentials.from_service_account_info(
     st.secrets["gcp_service_account"]
@@ -126,4 +126,5 @@ if selected_name != "-- Select Your Name --":
             st.warning("❗ No elective options available based on your branch and MDM.")
 else:
     st.info("Please select your name to proceed.")
+
 
