@@ -3,33 +3,39 @@ import pandas as pd
 from datetime import datetime
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
+import time
 
 # ------------------ CONFIG ------------------ #
-EXCEL_FILE = "allstudents.xlsx"
+EXCEL_FILE = "alldata.xlsm"
 SPREADSHEET_ID = "1y8SlCPHeeUHCi1o3vfjNhEF1bi2fQHtQ4NxHeRT_Blk"  # Replace with your Sheet ID
-SHEET_NAME = "electivedata"  # Or change to your actual sheet name
+SHEET_NAME = "electivedata"    # Change if needed
 
 # ------------------ GOOGLE SHEETS SETUP ------------------ #
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-creds = service_account.Credentials.from_service_account_file("credentials.json", scopes=SCOPES)
+import streamlit as st
+from google.oauth2 import service_account
+
+creds = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"]
+)
 service = build("sheets", "v4", credentials=creds)
 
 def get_submitted_records():
     try:
         result = service.spreadsheets().values().get(
             spreadsheetId=SPREADSHEET_ID,
-            range=f"{SHEET_NAME}!A2:G",
+            range=f"{SHEET_NAME}!A2:F",
         ).execute()
         values = result.get("values", [])
-
+        
         submitted_ids = set()
         sis_id_to_data = {}
 
         for row in values:
-            if len(row) >= 2:
-                sis_id = row[1].strip()
+            if len(row) >= 3:
+                sis_id = row[2]
                 submitted_ids.add(sis_id)
-                sis_id_to_data[sis_id] = row
+                sis_id_to_data[sis_id] = row  # Store full row or customize to just electives
 
         return submitted_ids, sis_id_to_data
 
@@ -37,17 +43,6 @@ def get_submitted_records():
         st.error(f"❌ Error reading from Google Sheet: {e}")
         return set(), {}
 
-def branch_to_sub(branch):
-    if branch == 'CSE':
-        return 'CSE : E-Commerce'
-    elif branch == 'MECH':
-        return 'MECH : Engineering Materials'
-    elif branch == 'ELPO':
-        return 'ELPO : Power Supply System'
-    elif branch == 'EXTC':
-        return 'EXTC : Analog Communication'
-    elif branch == 'IT':
-        return 'IT : Cyber Law'
 
 def write_to_google_sheet(row_data):
     body = {"values": [row_data]}
@@ -59,8 +54,6 @@ def write_to_google_sheet(row_data):
     ).execute()
 
 # ------------------ STREAMLIT UI ------------------ #
-#st.markdown("### This is a smaller title")
-st.markdown("#### SHRI SANT GAJANAN MAHARAJ COLLEGE OF ENGINEERING")
 st.title("🎓 Elective Selection Form")
 
 try:
@@ -69,87 +62,68 @@ except Exception as e:
     st.error(f"❌ Error reading Excel file: {e}")
     st.stop()
 
+# Get SIS IDs that already submitted
 submitted_ids, sis_id_to_data = get_submitted_records()
 
-# Session states
-if "sis_verified" not in st.session_state:
-    st.session_state.sis_verified = False
+# Select name
+student_names = ["-- Select Your Name --"] + list(df["STUDENT NAME"].unique())
+selected_name = st.selectbox("🔍 Select Your Name", student_names, index=0)
 
-if "submitted" not in st.session_state:
-    st.session_state.submitted = False
+if selected_name != "-- Select Your Name --":
+    with st.spinner("Loading your details..."):
+        time.sleep(1)
 
-# ------------------ FINAL THANK YOU ------------------ #
-if st.session_state.submitted:
-    st.success("🎉 Thank you! Your response has been recorded.")
-    st.stop()
-
-# ------------------ SIS ID Step ------------------ #
-if not st.session_state.sis_verified:
-    entered_sis_id = st.text_input("🔢 Enter Your SIS ID")
-    if st.button("Next"):
-        if entered_sis_id and entered_sis_id.isdigit():
-            sis_id_str = entered_sis_id.strip()
-            matching_row = df[df["sis ID"].astype(str).str.strip() == sis_id_str]
-
-            if not matching_row.empty:
-                st.session_state.sis_id = sis_id_str
-                st.session_state.student_row = matching_row.iloc[0]
-                st.session_state.sis_verified = True
-            else:
-                st.error("❌ SIS ID not found. Please check and try again.")
-        else:
-            st.warning("Please enter a valid numeric SIS ID.")
-
-# ------------------ Elective Selection Step ------------------ #
-if st.session_state.sis_verified:
-    student_row = st.session_state.student_row
-    sis_id_str = st.session_state.sis_id
-    student_name = student_row["STUDENT NAME"]
-    branch = str(student_row["Br."]).strip().upper()
-    br_coded = str(student_row["BR_coded"]).strip().upper()
-    mdm_prog = str(student_row["Allotted MDM Prog."]).strip().upper()
+    student_row = df[df["STUDENT NAME"] == selected_name].iloc[0]
+    sis_id = str(student_row["sis ID"]).strip()
 
     st.markdown("### 🧾 Student Details")
-    st.write(f"**👤 Name:** {student_name}")
-    st.write(f"**🆔 SIS ID:** {sis_id_str}")
-    st.write(f"**🏷️ Branch:** {branch}")
-    st.write(f"**📌 Allotted MDM Programme:** {mdm_prog}")
+    st.write(f"**👤 Name:** {student_row['STUDENT NAME']}")
+    st.write(f"**🆔 SIS ID:** {sis_id}")
+    st.write(f"**🏷️ BR_coded:** {student_row['BR_coded']}")
+    st.write(f"**📌 Allotted MDM Prog.:** {student_row['Allotted MDM Prog.']}")
+    #st.write(f"**📌 Elective Branch selected:** {submitted_ids['Elective branch2']}")
+    print(submitted_ids)
 
-    if sis_id_str in submitted_ids:
-        prev_data = sis_id_to_data[sis_id_str]
-        prev_elective = prev_data[6] if len(prev_data) > 6 else "N/A"
-        
-        st.info(f"✅ You have already submitted your elective choice: **{prev_elective}**")
+    
+
+    if sis_id in submitted_ids:
+        prev_data = sis_id_to_data[sis_id]
+        elective_choices = prev_data[3:] 
+        print(elective_choices[2]) # Assuming electives start from column 4 (index 3)
+
+        st.info(f"✅ You have already submitted your elective choices: {(elective_choices[2])}")
         st.warning("You cannot submit again.")
-        st.stop()  
     else:
         all_elective_options = ['EXTC', 'MECH', 'CSE', 'ELPO', 'IT']
+        br_coded = str(student_row["BR_coded"]).strip().upper()
+        mdm_prog = str(student_row["Allotted MDM Prog."]).strip().upper()
         excluded = set([br_coded, mdm_prog])
 
         if br_coded in ['CSE', 'IT']:
             excluded.update(['CSE', 'IT'])
 
         available_electives = [e for e in all_elective_options if e.upper() not in excluded]
-        options_display = [branch_to_sub(i) for i in available_electives]
 
-        with st.form("elective_form"):
-            selected_elective = st.selectbox("🎯 Select Your Elective", options_display)
-            submit_final = st.form_submit_button("✅ Submit")
+        if available_electives:
+            selected_elective = st.selectbox("🎯 Select Your Elective", available_electives)
 
-            if submit_final:
+            if st.button("✅ Submit"):
                 timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 data_row = [
-                    timestamp,
-                    sis_id_str,
-                    student_name,
+                    str(timestamp),
+                    str(student_row["STUDENT NAME"]),
+                    str(student_row["sis ID"]),
                     br_coded,
-                    branch,
                     mdm_prog,
                     selected_elective
                 ]
                 try:
                     write_to_google_sheet(data_row)
-                    st.session_state.submitted = True
-                    st.rerun()
+                    st.success("🎉 Submission successful!")
                 except Exception as e:
                     st.error(f"❌ Error writing to Google Sheet: {e}")
+        else:
+            st.warning("❗ No elective options available based on your branch and MDM.")
+else:
+    st.info("Please select your name to proceed.")
+
