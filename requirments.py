@@ -1,5 +1,5 @@
 streamlit
-google-api-python-client
+pandas
+gspread
 google-auth
-google-auth-httplib2
-google-auth-oauthlib
+google-api-python-client
