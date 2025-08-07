@@ -1,6 +1,6 @@
 streamlit
 pandas
 gspread
-google-auth
 google-api-python-client
-google-auth-oauthlib
+google-auth==2.28.1
+google-auth-oauthlib==1.2.0
