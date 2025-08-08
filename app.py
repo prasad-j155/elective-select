@@ -62,7 +62,7 @@ def write_to_google_sheet(row_data):
 
 # ------------------ STREAMLIT UI ------------------ #
 #st.markdown("### This is a smaller title")
-st.markdown("#### SHRI SANT GAJANAN MAHARAJ COLLEGE OF ENGINEERING")
+st.markdown("#### SHRI SANT GAJANAN MAHARAJ COLLEGE OF ENGINEERING,SHEGAON")
 st.title("🎓 Elective Selection Form")
 
 try:
@@ -155,4 +155,5 @@ if st.session_state.sis_verified:
                     st.rerun()
                 except Exception as e:
                     st.error(f"❌ Error writing to Google Sheet: {e}")
+
 
