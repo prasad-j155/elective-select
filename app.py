@@ -46,7 +46,7 @@ def branch_to_sub(branch):
 st.markdown("#### SHRI SANT GAJANAN MAHARAJ COLLEGE OF ENGINEERING")
 st.title("🎓 Elective Selection Form")
 st.markdown(
-    "<h4 style='text-align:center'>(for diploma students only)</h4>",
+    "📢<h4 style='text-align:center'>(for diploma students only)</h4>",
     unsafe_allow_html=True
 )
 # Session state for re-rendering dropdowns
@@ -86,7 +86,7 @@ elif branch =='EXTC':
 else:
     class_options=['2M', '2S', '2R', '2N', '2U1','2U2']
 
-class_options_sel = st.selectbox("🏷️ Select Your Class", class_options)
+class_options_sel = st.selectbox("📘 Select Your Class", class_options)
 
 
 # ------------------ MDM Programme ------------------ #
@@ -96,7 +96,7 @@ if branch in ["CSE", "IT"]:
     mdm_excluded.update(["CSE", "IT"])
 
 mdm_options = [b for b in branch_options if b not in mdm_excluded]
-mdm = st.selectbox("Select Your MDM Programme", mdm_options)
+mdm = st.selectbox("🧾 Select Your MDM Programme", mdm_options)
 st.session_state.selected_mdm = mdm
 
 # ------------------ Elective Selection ------------------ #
@@ -136,6 +136,7 @@ if st.button("✅ Submit"):
             st.success("🎉 Thank you! Your response has been recorded.")
         except Exception as e:
             st.error(f"❌ Error writing to Google Sheet: {e}")
+
 
 
 
