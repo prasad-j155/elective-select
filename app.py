@@ -46,8 +46,7 @@ def branch_to_sub(branch):
 st.markdown("#### SHRI SANT GAJANAN MAHARAJ COLLEGE OF ENGINEERING")
 st.title("🎓 Elective Selection Form")
 st.markdown(
-    "📢<h4 style='text-align:center'>(for diploma students only)</h4>",
-    unsafe_allow_html=True
+    "📢(for diploma students only)"
 )
 # Session state for re-rendering dropdowns
 if "selected_branch" not in st.session_state:
@@ -136,6 +135,7 @@ if st.button("✅ Submit"):
             st.success("🎉 Thank you! Your response has been recorded.")
         except Exception as e:
             st.error(f"❌ Error writing to Google Sheet: {e}")
+
 
 
 
