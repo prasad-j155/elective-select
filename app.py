@@ -45,7 +45,10 @@ def branch_to_sub(branch):
 # ------------------ STREAMLIT UI ------------------ #
 st.markdown("#### SHRI SANT GAJANAN MAHARAJ COLLEGE OF ENGINEERING")
 st.title("🎓 Elective Selection Form")
-st.markdown("####  (for diploma students only)")
+st.markdown(
+    "<h4 style='text-align:center'>(for diploma students only)</h4>",
+    unsafe_allow_html=True
+)
 # Session state for re-rendering dropdowns
 if "selected_branch" not in st.session_state:
     st.session_state.selected_branch = None
@@ -133,6 +136,7 @@ if st.button("✅ Submit"):
             st.success("🎉 Thank you! Your response has been recorded.")
         except Exception as e:
             st.error(f"❌ Error writing to Google Sheet: {e}")
+
 
 
 
