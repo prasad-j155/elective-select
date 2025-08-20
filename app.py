@@ -120,6 +120,7 @@ if st.button("✅ Submit"):
             timestamp,
             student_name,
             branch,
+            class_options_sel,
             mdm,
             elective_selected
         ]
@@ -129,4 +130,5 @@ if st.button("✅ Submit"):
             st.success("🎉 Thank you! Your response has been recorded.")
         except Exception as e:
             st.error(f"❌ Error writing to Google Sheet: {e}")
+
 
