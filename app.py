@@ -12,7 +12,10 @@ SHEET_NAME = "electivedata"    # Change if needed
 
 # ------------------ GOOGLE SHEETS SETUP ------------------ #
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-creds = service_account.Credentials.from_service_account_file("credentials.json", scopes=SCOPES)
+#creds = service_account.Credentials.from_service_account_file("credentials.json", scopes=SCOPES)
+creds = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"]
+)
 service = build("sheets", "v4", credentials=creds)
 
 
@@ -130,5 +133,6 @@ if st.button("✅ Submit"):
             st.success("🎉 Thank you! Your response has been recorded.")
         except Exception as e:
             st.error(f"❌ Error writing to Google Sheet: {e}")
+
 
 
