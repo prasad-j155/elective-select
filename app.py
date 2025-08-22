@@ -43,7 +43,7 @@ def branch_to_sub(branch):
         return 'IT : Cyber Law'
 
 # ------------------ STREAMLIT UI ------------------ #
-st.markdown("#### SHRI SANT GAJANAN MAHARAJ COLLEGE OF ENGINEERING")
+st.markdown("#### SHRI SANT GAJANAN MAHARAJ COLLEGE OF ENGINEERING,SHEGAON")
 st.title("🎓 Elective Selection Form")
 st.markdown(
     "#### 📢(for diploma students only)"
@@ -135,6 +135,7 @@ if st.button("✅ Submit"):
             st.success("🎉 Thank you! Your response has been recorded.")
         except Exception as e:
             st.error(f"❌ Error writing to Google Sheet: {e}")
+
 
 
 
