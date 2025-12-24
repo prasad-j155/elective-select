@@ -5,7 +5,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
 # ------------------ CONFIG ------------------ #
-EXCEL_FILE = "allstudents.xlsx"
+EXCEL_FILE = "student-new.xlsx"
 SPREADSHEET_ID = "1y8SlCPHeeUHCi1o3vfjNhEF1bi2fQHtQ4NxHeRT_Blk"  # Replace with your Sheet ID
 SHEET_NAME = "electivedata"  # Or change to your actual sheet name
 
@@ -166,6 +166,7 @@ if st.session_state.sis_verified:
                         st.rerun()
                     except Exception as e:
                         st.error(f"❌ Error writing to Google Sheet: {e}")
+
 
 
 
