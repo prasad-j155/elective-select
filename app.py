@@ -91,7 +91,7 @@ if not st.session_state.sis_verified:
     if st.button("Next"):
         if entered_sis_id:
             sis_id_str = entered_sis_id.strip().upper()
-            st.title(sis_id)
+            st.title(sis_id_str)
             matching_row = df[df["sis ID"].astype(str).str.strip().str.upper() == sis_id_str]
             st.title(matching_row)
 
@@ -166,6 +166,7 @@ if st.session_state.sis_verified:
                         st.rerun()
                     except Exception as e:
                         st.error(f"❌ Error writing to Google Sheet: {e}")
+
 
 
 
