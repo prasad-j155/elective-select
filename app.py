@@ -132,33 +132,20 @@ if st.session_state.sis_verified:
             excluded.update(['CSE', 'IT'])
 
         available_electives = [e for e in all_elective_options if e.upper() not in excluded]
-        options_display = ["-- Select Elective --"] + [branch_to_sub(i) for i in available_electives]
+        options_display = [branch_to_sub(i) for i in available_electives]
+        options_display.insert(0, "select your elective")
+        
+        
 
         with st.form("elective_form"):
-            selected_elective = st.selectbox("🎯 Select Your Elective",options_display,index=0)
+            selected_elective = st.selectbox("🎯 Select Your Elective", options_display)
+            #st.write(selected_elective=="select your elective")
+
+            
             submit_final = st.form_submit_button("✅ Submit")
 
             if submit_final:
-                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                data_row = [
-                    timestamp,
-                    sis_id_str,
-                    student_name,
-                    br_coded,
-                    branch,
-                    mdm_prog,
-                    selected_elective
-                ]
-                try:
-                    write_to_google_sheet(data_row)
-                    st.session_state.submitted = True
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"❌ Error writing to Google Sheet: {e}")
-
-
-            if submit_final:
-                if selected_elective == "-- Select Elective --":
+                if selected_elective=="select your elective":
                     st.warning("⚠️ Please select an elective before submitting.")
                 else:
                     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -170,13 +157,17 @@ if st.session_state.sis_verified:
                         branch,
                         mdm_prog,
                         selected_elective
-                ]
-                try:
-                    write_to_google_sheet(data_row)
-                    st.session_state.submitted = True
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"❌ Error writing to Google Sheet: {e}")
+                    ]
+                    try:
+                        write_to_google_sheet(data_row)
+                        st.session_state.submitted = True
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"❌ Error writing to Google Sheet: {e}")
+
+
+
+
 
 
 
