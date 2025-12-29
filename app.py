@@ -87,6 +87,9 @@ if st.session_state.submitted:
 
 # ------------------ SIS ID Step ------------------ #
 if not st.session_state.sis_verified:
+    st.info("💡 IMP:Diploma students are instructed to use their ERP Login ID for registration, which starts with 312**** ")
+    st.info("While logging in, do not use the letter "S")
+    st.info("Use only the numeric ID starting from 312***")
     entered_sis_id = st.text_input("🔢 Enter Your SIS ID")
     if st.button("Next"):
         if entered_sis_id:
@@ -166,6 +169,7 @@ if st.session_state.sis_verified:
                         st.rerun()
                     except Exception as e:
                         st.error(f"❌ Error writing to Google Sheet: {e}")
+
 
 
 
