@@ -5,7 +5,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
 # ------------------ CONFIG ------------------ #
-EXCEL_FILE = "student-new.xlsx"
+EXCEL_FILE = "student-new-2-05-2026.xlsx"
 SPREADSHEET_ID = "1y8SlCPHeeUHCi1o3vfjNhEF1bi2fQHtQ4NxHeRT_Blk"  # Replace with your Sheet ID
 SHEET_NAME = "electivedata"  # Or change to your actual sheet name
 
@@ -41,15 +41,15 @@ def get_submitted_records():
 
 def branch_to_sub(branch):
     if branch == 'CSE':
-        return 'CSE : Information Systems for Engineers'
+        return 'CSE : Introduction to Data Analytics(IDA)'
     elif branch == 'MECH':
-        return 'MECH : Automotive Technology'
+        return 'MECH :Industrial Robotics &amp; Automation(IRA)'
     elif branch == 'ELPO':
-        return 'ELPO : Electrical Machines'
+        return 'ELPO : Energy Audit &amp; Management (EAM)'
     elif branch == 'EXTC':
-        return 'EXTC : Satellite Communication'
+        return 'EXTC : Introduction to Wireless Communication'
     elif branch == 'IT':
-        return 'IT : Artificial Intelligence'
+        return 'IT : Fundamentals of Cyber Security'
 
 def write_to_google_sheet(row_data):
     body = {"values": [row_data]}
