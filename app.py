@@ -43,9 +43,9 @@ def branch_to_sub(branch):
     if branch == 'CSE':
         return 'CSE : Introduction to Data Analytics(IDA)'
     elif branch == 'MECH':
-        return 'MECH :Industrial Robotics &amp; Automation(IRA)'
+        return 'MECH :Industrial Robotics & Automation(IRA)'
     elif branch == 'ELPO':
-        return 'ELPO : Energy Audit &amp; Management (EAM)'
+        return 'ELPO : Energy Audit & Management (EAM)'
     elif branch == 'EXTC':
         return 'EXTC : Introduction to Wireless Communication'
     elif branch == 'IT':
