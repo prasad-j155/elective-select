@@ -40,16 +40,17 @@ def get_submitted_records():
         return set(), {}
 
 def branch_to_sub(branch):
-    if branch == 'CSE':
-        return 'CSE : Introduction to Data Analytics(IDA)'
-    elif branch == 'MECH':
-        return 'MECH :Industrial Robotics & Automation(IRA)'
-    elif branch == 'ELPO':
-        return 'ELPO : Energy Audit & Management (EAM)'
-    elif branch == 'EXTC':
-        return 'EXTC : Introduction to Wireless Communication'
-    elif branch == 'IT':
-        return 'IT : Fundamentals of Cyber Security'
+    subjects = {
+        'CSE': ['CSE : Information Systems for Engineers'],
+        'MECH': [
+            'MECH : Automotive Technology',
+            'MECH : Sustainable Energy'  # <-- Replace with actual subject name
+        ],
+        'ELPO': ['ELPO : Electrical Machines'],
+        'EXTC': ['EXTC : Satellite Communication'],
+        'IT': ['IT : Artificial Intelligence']
+    }
+    return subjects.get(branch, [])
 
 def write_to_google_sheet(row_data):
     body = {"values": [row_data]}
@@ -61,7 +62,6 @@ def write_to_google_sheet(row_data):
     ).execute()
 
 # ------------------ STREAMLIT UI ------------------ #
-#st.markdown("### This is a smaller title")
 st.markdown("#### SHRI SANT GAJANAN MAHARAJ COLLEGE OF ENGINEERING,SHEGAON")
 st.title("🎓 Elective Selection Form")
 
@@ -89,17 +89,15 @@ if st.session_state.submitted:
 if not st.session_state.sis_verified:
     st.info("💡 **Important Instructions for Diploma Students:**")
     st.markdown("""
-    - Use your **ERP Login ID** for registration  
-    - It should start with **312****  
-    - **Do not include the letter 'S'** 
+- Use your **ERP Login ID** for registration  
+- It should start with **312****  
+- **Do not include the letter 'S'** 
     """)
     entered_sis_id = st.text_input("🔢 Enter Your SIS ID")
     if st.button("Next"):
         if entered_sis_id:
             sis_id_str = entered_sis_id.strip().upper()
-            #sis_id_str = entered_sis_id.strip()
             matching_row = df[df["sis ID"].astype(str).str.strip().str.upper() == sis_id_str]
-            #matching_row = df[df["sis ID"].astype(str).str.strip() == sis_id_str]
 
             if not matching_row.empty:
                 st.session_state.sis_id = sis_id_str
@@ -140,20 +138,18 @@ if st.session_state.sis_verified:
             excluded.update(['CSE', 'IT'])
 
         available_electives = [e for e in all_elective_options if e.upper() not in excluded]
-        options_display = [branch_to_sub(i) for i in available_electives]
-        options_display.insert(0, "select your elective")
         
-        
+        # Flatten the list of subjects for all available branches
+        options_display = ["select your elective"]
+        for b in available_electives:
+            options_display.extend(branch_to_sub(b))
 
         with st.form("elective_form"):
             selected_elective = st.selectbox("🎯 Select Your Elective", options_display)
-            #st.write(selected_elective=="select your elective")
-
-            
             submit_final = st.form_submit_button("✅ Submit")
 
             if submit_final:
-                if selected_elective=="select your elective":
+                if selected_elective == "select your elective":
                     st.warning("⚠️ Please select an elective before submitting.")
                 else:
                     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -172,22 +168,3 @@ if st.session_state.sis_verified:
                         st.rerun()
                     except Exception as e:
                         st.error(f"❌ Error writing to Google Sheet: {e}")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
