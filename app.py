@@ -57,7 +57,7 @@ def write_to_google_sheet(row_data):
     service.spreadsheets().values().append(
         spreadsheetId=SPREADSHEET_ID,
         range=f"{SHEET_NAME}!A1",
-        valueInputOption="USER_ENTERED",
+        valueInputOption="RAW",
         body=body
     ).execute()
 
